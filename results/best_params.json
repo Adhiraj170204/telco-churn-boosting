@@ -1,0 +1,32 @@
+{
+  "Random Forest (bagging)": {
+    "class_weight": "balanced",
+    "max_depth": null,
+    "max_features": "sqrt",
+    "min_samples_leaf": 27,
+    "n_estimators": 258
+  },
+  "AdaBoost (boosting)": {
+    "estimator__max_depth": 1,
+    "learning_rate": 0.8536189862866826,
+    "n_estimators": 291
+  },
+  "Gradient Boosting (boosting)": {
+    "learning_rate": 0.014413697528610409,
+    "max_depth": 2,
+    "min_samples_leaf": 8,
+    "n_estimators": 530,
+    "subsample": 0.6693458614031088
+  },
+  "XGBoost (boosting)": {
+    "colsample_bytree": 0.8344941273571143,
+    "gamma": 2.9034331071822734,
+    "learning_rate": 0.030503596407777202,
+    "max_depth": 2,
+    "min_child_weight": 3,
+    "n_estimators": 252,
+    "reg_lambda": 0.10235832435175114,
+    "scale_pos_weight": 2.77,
+    "subsample": 0.7221455441377573
+  }
+}
