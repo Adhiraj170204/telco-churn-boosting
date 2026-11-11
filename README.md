@@ -32,31 +32,31 @@ Median tenure is 10 months for churners vs 38 for customers who stayed.
 
 | Model | CV ROC-AUC, default | CV ROC-AUC, tuned (± sd) | Train AUC | **Test ROC-AUC** | Test PR-AUC | Test recall | Test F1 | Tuning time* |
 |---|---|---|---|---|---|---|---|---|
-| Gradient Boosting | 0.845 | 0.850 ± 0.012 | 0.862 | **0.846** | 0.664 | 71.9% | 0.637 | 270 s |
-| XGBoost | 0.822 | **0.850** ± 0.012 | 0.862 | **0.846** | **0.664** | 73.0% | 0.638 | **24 s** |
-| Random Forest (bagging) | 0.823 | 0.848 ± 0.009 | 0.889 | 0.844 | 0.653 | 73.5% | 0.643 | 196 s |
-| AdaBoost | 0.846 | 0.849 ± 0.011 | 0.856 | 0.841 | 0.651 | 70.3% | 0.632 | 249 s |
+| XGBoost | 0.822 | **0.850** ± 0.012 | 0.862 | **0.846** | **0.666** | 71.7% | 0.634 | **10 s** |
+| Gradient Boosting | 0.845 | 0.850 ± 0.012 | 0.862 | **0.846** | 0.664 | 71.9% | **0.637** | 98 s |
+| Random Forest (bagging) | 0.823 | 0.848 ± 0.010 | 0.878 | 0.845 | 0.653 | 70.6% | 0.626 | 61 s |
+| AdaBoost | 0.846 | 0.849 ± 0.011 | 0.856 | 0.841 | 0.651 | 70.3% | 0.632 | 79 s |
 
-\*on a 2-core machine; faster on a typical laptop.
+\*wall-clock for the 30×5-fold search; varies with hardware. Full numbers in `results/model_comparison.csv`.
 
 **Findings**
-- **Tuning mattered most for XGBoost (+0.029 CV AUC) and Random Forest (+0.026).** Their defaults
+- **Tuning mattered most for XGBoost (+0.028 CV AUC) and Random Forest (+0.026).** Their defaults
   (deep trees) overfit. AdaBoost and Gradient Boosting were already well configured by default (+0.003–0.004).
 - **After tuning, all four models land within 0.005 test ROC-AUC (0.841–0.846)**, smaller than the CV
   standard deviation (~0.01), so no model is meaningfully better on this dataset.
 - **Tuning picked shallow trees (depth 2) with a small learning rate** for both Gradient Boosting and XGBoost:
   the churn signal is simple and mostly additive, so complex interactions mainly add noise.
-- **Bagging vs boosting:** Random Forest fits training data more tightly (train AUC 0.889 vs 0.86 for the
+- **Bagging vs boosting:** Random Forest fits training data more tightly (train AUC 0.878 vs ~0.86 for the
   boosters) but generalises equally well, because averaging many deep trees cancels their variance.
 - **XGBoost tuned ~10× faster** than scikit-learn's Gradient Boosting for the same accuracy, so it's the
   practical choice to deploy and retrain.
-- **Top drivers (permutation importance):** tenure and contract type dominate (shuffling them drops test
-  AUC by 0.056 and 0.047), followed by internet service, online security and tech support.
+- **Top drivers (permutation importance, XGBoost):** contract type and tenure dominate (shuffling them drops
+  test AUC by 0.068 and 0.049), followed by internet service, online security and tech support.
 
 ## Business takeaways
 
-- At the chosen threshold, the model catches **~73% of churners** in the test set, with about 57% of
-  flagged customers actually churning (2.2× the 26.5% base rate).
+- At the chosen threshold, the model catches **~72% of churners** in the test set (XGBoost), with about 57%
+  of flagged customers actually churning (2.1× the 26.5% base rate).
 - Retention spend should target **new, month-to-month, fibre, electronic-check customers**. Offers that
   move customers to one- or two-year contracts, or bundle security and tech-support add-ons, address the
   strongest churn drivers.
